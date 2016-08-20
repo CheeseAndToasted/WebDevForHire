@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+<head>
+<head charset= "utf-8">
+<meta name="description" content="Random Quote machine project based off FreeCodeCamp's challenge">
+<meta name="author" content="Rohan Gandhi">
+	
+<title>Random Quote Machine</title>
+
+<!-- Bootstrap Mini CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- JQuery Core 3.1 -->
+<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+
+<!-- FontAwesome -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+	
+<!-- Google Fonts-->
+<link href="https://fonts.googleapis.com/css?family=Fjalla+One|Bungee+Shade|Righteous" rel="stylesheet">
+
+<!-- Custom CSS -->
+<style>
+	body {
+		background-color: #303030;
+		color: white; 
+	}
+	.title {
+		text-align: center;
+		
+	}
+	.box {
+		margin-top: 150px;  
+		margin-left: auto; 
+		margin-right: auto; 
+		width: 90%; 
+		background-color: black; 
+		border-radius: 40px; 
+	}
+	#title {
+		font-family: 'Bungee Shade';
+		font-size: 50px; 
+	}
+	.quotebox {
+		padding-top: 75px;
+		padding-left: 75px;
+		padding-right: 50px;
+		
+	}
+	.quote {
+		font-family: 'Righteous', cursive;
+	}
+	.authorbox {
+		padding-top: 20px; 
+		text-align: right; 
+		padding-right: 50px; 
+	}
+	.author, .authordash {
+		font-size: ; 
+		font-family: 'Fjalla One', sans-serif;
+	}
+	
+	.inline {
+		display: inline; 
+	}
+	.socialbuttons {
+		text-align: center;
+		padding-top: 75px;
+		padding-bottom: 75px; 
+	
+	}
+	@media (max-width: 768px) {
+		.quote, .fa {
+			font-size: 16px; 
+		}
+	}
+	
+	@media (min-width: 769px) {
+		.quote, .fa {
+			font-size: 2em; 
+		}
+	}
+	
+</style>
+	
+</head>	
+	
+	
+<body>
+		<div class="container box">
+			<div class="title">
+			<h1 id="title">Random Quote Machine</h1>
+			<h4>By: Rohan Gandhi</h4>
+			</div>
+			<div class="quotebox">
+				<i class="fa fa-quote-left inline"> </i>
+					<h1 class="quote inline" id="quoteText">Live as if you were to die tomorrow. Learn as if you were to live forever.</h1>
+				<i class="fa fa-quote-right inline"> </i>
+			<div class="authorbox">
+				<h4 class="authordash inline"> -  </h4> <h4 class="author inline" id="quoteAuthor">Mahatma Gandhi</h4> 
+			</div>
+			<div class="socialbuttons">
+			<button type="button" class="newquote btn btn-success">Get new Quote!</button> <br>
+			<a class="button" id="tweetButton" title="Post this quote on Twitter!" target="_blank">
+				<i class="fa fa-twitter-square"></i>
+			</a>
+			</div>
+			</div>
+		</div>
+		
+</body>
+	
+	
+	
+	
+<!-- JQuery Script -->	
+	<script>
+		$(document).ready(function(){
+			$('.newquote').on('click', function() {
+					$.getJSON("http://api.forismatic.com/api/1.0/?method=getQuote&format=jsonp&lang=en&jsonp=?", function(json){
+			// Replaces Current Quote with one from API
+						var quote = json.quoteText;
+						var author = json.quoteAuthor;
+						$('#quoteText').fadeOut(function(){
+							$('#quoteText').html(quote).fadeIn();
+						});
+						$('#quoteAuthor').fadeOut(function(){
+							$('#quoteAuthor').html(author).fadeIn();
+						});
+						
+			// Randomly switches quote text color		
+						var fontColors = ['#3399ff', '#ff66ff', '#ff9933', '#ff4d4d', '#ffff00', '#66ff33', '#cc66ff']
+						var randColor = fontColors[Math.floor(Math.random() * fontColors.length)];
+						$('.quotebox').css('color', randColor);
+						
+			// Tweet Button 
+						$("#tweetButton").on("click", function() {
+        					window.open("https://twitter.com/intent/tweet?hashtags=WebDevForHire&text=\"" + quote.replace(/;/g, " --") + "\" -- " + author);
+      					})
+				}); 
+			});
+		
+			
+			
+		});
+		
+	</script>
+	
