@@ -88,10 +88,11 @@
 <!-- JQuery Script -->	
 	<script>
 		$(document).ready(function(){
-			if (navigator.geolocation) {
- 				navigator.geolocation.getCurrentPosition(function(position) {
-					var apiurl = "http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&APPID=f065cfc8d4f6e76f54c639606f7da651"; 
-					
+			$.getJSON('http://ip-api.com/json',function(data){
+					var apiurl = "http://api.openweathermap.org/data/2.5/weather?lat=" + data.lat + "&lon=" + data.lon + "&APPID=f065cfc8d4f6e76f54c639606f7da651"; 
+					var city = data.city;
+					var country = data.country; 
+					  
 					$.getJSON(apiurl, function(json){
 // Current Weather Icon 						
 						var iconId = json.weather[0].icon;
@@ -155,7 +156,7 @@
 						};
 						
 // Current Weather and Description
-						$('.city').html('Current Weather for: ' + json.name + ', ' + json.sys.country);
+						$('.city').html('Current Weather for: ' + city + ', ' + country);
 						$('.weatherMain').html(json.weather[0].main);
 						$('.weatherDescript').html(json.weather[0].description);
 						$('.cloudyness').html(json.clouds.all + '% cloud cover');
@@ -277,8 +278,7 @@
 					*/
 							
 						});
-				}); 
-			};
+			});
 		});
 		
 	</script>
