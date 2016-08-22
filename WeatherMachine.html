@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+<head>
+<head charset= "utf-8">
+<meta name="description" content="Current weather display project based off FreeCodeCamp's front end development challenge">
+<meta name="author" content="Rohan Gandhi">
+	
+<title>Current Weather</title>
+
+<!-- Bootstrap Mini CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+
+<!-- Weather Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons-wind.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.css">
+
+<!-- Custom CSS -->
+<style>
+	body {
+		background-color: black; 
+		color: white;
+	}
+	i {
+		color: turquoise;
+	}
+	.main, .tempbox, .windBox {
+		text-align: center;
+	}
+	p, .wi, .currentTemp, .tempbox, .windBox {
+		display: inline; 
+	}
+	.icon {
+		font-size: 8em; 
+		padding-top: 50px; 
+	}
+	.tempText{
+		padding-top: 5px;
+	}
+
+	
+	
+</style>
+	
+</head>	
+	
+	
+<body>
+	<div class="container">
+		<div class="main col-md-12">
+			<h1 class="city"></h1>
+			<i class="icon wi"></i>
+			<h2 class="weatherMain"></h2>
+			<h3 class="weatherDescript"></h3>
+			<p class="cloudyness"></p>
+		</div>
+		<div class="tempbox col-md-6">
+				<h2 class="tempTitle">Temperature</h2> 
+				<div class="tempText">
+					<h3 class="currentTemp">33</h3>
+					<i class="tempUnits wi wi-celsius"></i> <br>
+					<p class="highTemp">High: 33</p> <i class="tempUnits wi wi-celsius"></i>
+					<p class="lowTemp">Low: 33</p> <i class="tempUnits wi wi-celsius"></i>
+				</div>
+		</div>
+		<div class="windBox col-md-6">
+			<h2 class="windTitle">Wind</h2>
+			<div class="windText">
+				<p><strong>Speed: </strong></p>
+				<i class="windSpeed wi"></i>
+				<p class="ms">m/s</p> 	<br>
+				<p class="windDire"></p>
+				<i class="wi wi-wind"></i>	<br>	
+				<p class="humidity"></p>
+				<i class="wi wi-humidity"></i>
+			</div>
+		</div>
+	</div>
+</body>
+
+	
+<!-- JQuery Core 3.1 -->
+<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+	
+<!-- JQuery Script -->	
+	<script>
+		$(document).ready(function(){
+			if (navigator.geolocation) {
+ 				navigator.geolocation.getCurrentPosition(function(position) {
+					var apiurl = "http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&APPID=f065cfc8d4f6e76f54c639606f7da651"; 
+					
+					$.getJSON(apiurl, function(json){
+// Current Weather Icon 						
+						var iconId = json.weather[0].icon;
+						switch (iconId) {
+							case '01d':
+								$('.icon').addClass("wi-day-sunny");
+								break;
+							case '01n':
+								$('.icon').addClass("wi-night-clear");
+								break;
+							case '02d':
+								$('.icon').addClass("wi-day-cloudy");
+								break;
+							case '02n':
+								$('.icon').addClass("wi-night-alt-cloudy");
+								break;
+							case '03d':
+								$('.icon').addClass("wi-cloud");
+								break;
+							case '03n':
+								$('.icon').addClass("wi-cloud");
+								break;
+							case '04d':
+								$('.icon').addClass("wi-cloudy");
+								break;
+							case '04n':
+								$('.icon').addClass("wi-cloudy");
+								break;
+							case '09d':
+								$('.icon').addClass("wi-day-showers");
+								break;
+							case '09n':
+								$('.icon').addClass("wi-night-alt-showers");
+								break;
+							case '10d':
+								$('.icon').addClass("wi-day-rain");
+								break;
+							case '10n':
+								$('.icon').addClass("wi-night-alt-rain");
+								break;
+							case '11d':
+								$('.icon').addClass("wi-day-lightning");
+								break;
+							case '11n':
+								$('.icon').addClass("wi-night-alt-lightning");
+								break;
+							case '13d':
+								$('.icon').addClass("wi-day-snow");
+								break;
+							case '13n':
+								$('.icon').addClass("wi-night-alt-snow");
+								break;
+							case '50d':
+								$('.icon').addClass("wi-fog");
+								break;
+							case '50n':
+								$('.icon').addClass("wi-fog");
+								break;
+							default: 
+								$('.icon').addClass("wi-alien");
+						};
+						
+// Current Weather and Description
+						$('.city').html('Current Weather for: ' + json.name + ', ' + json.sys.country);
+						$('.weatherMain').html(json.weather[0].main);
+						$('.weatherDescript').html(json.weather[0].description);
+						$('.cloudyness').html(json.clouds.all + '% cloud cover');
+						
+// Temperature's and conversions
+							var celcius = function(kelvin) {
+								return kelvin - 273;
+							};
+							var farenheit = function(kelvin) {
+								return (kelvin - 273) * 1.8 + 32;
+							};
+							
+							$('.currentTemp').html(celcius(Math.round(json.main.temp)));
+							$('.highTemp').html('<strong>High:</strong> ' + celcius(Math.round(json.main.temp_max)));
+							$('.lowTemp').html('<strong>Low:</strong> ' + celcius(Math.round(json.main.temp_min)));
+					
+							$('.wi-celsius').click(function(){
+								$('.wi-celsius').removeClass('wi-celsius');
+								$('.tempUnits').addClass('wi-fahrenheit');
+								$('.currentTemp').html(farenheit(Math.round(json.main.temp)));
+								$('.highTemp').html('<strong>High: </strong>' + farenheit(Math.round(json.main.temp_max)));
+								$('.lowTemp').html('<strong>Low: </strong>' + farenheit(Math.round(json.main.temp_min)));
+							});
+							$('.wi-fahrenheit').click(function(){
+								$('.wi-fahrenheit').removeClass('wi-fahrenheit');
+								$('.tempUnits').addClass('wi-celsius');
+								$('.currentTemp').html(celcius(Math.round(json.main.temp)));
+								$('.highTemp').html('<strong>High: </strong>' + celcius(Math.round(json.main.temp_max)));
+								$('.lowTemp').html('<strong>Low: </strong>' + celcius(Math.round(json.main.temp_min)));
+							});
+// Windbox Methods
+							$('.humidity').html('<strong>Humidity: </strong>' + json.main.humidity);
+	// Wind Speed 
+							var windSpeed = Math.round(json.wind.speed); 
+							
+							switch(windSpeed) {
+								case 0:
+									$('.windSpeed').addClass('wi-wind-beaufort-0');
+									break;
+								case 1: 
+									$('.windSpeed').addClass('wi-wind-beaufort-1');
+									break;
+								case 2: 
+									$('.windSpeed').addClass('wi-wind-beaufort-2');
+									break;
+								case 3: 
+									$('.windSpeed').addClass('wi-wind-beaufort-3');
+									break;
+								case 4: 
+									$('.windSpeed').addClass('wi-wind-beaufort-4');
+									break;
+								case 5: 
+									$('.windSpeed').addClass('wi-wind-beaufort-5');
+									break;
+								case 6: 
+									$('.windSpeed').addClass('wi-wind-beaufort-6');
+									break;
+								case 7: 
+									$('.windSpeed').addClass('wi-wind-beaufort-7');
+									break;
+								case 8: 
+									$('.windSpeed').addClass('wi-wind-beaufort-8');
+									break;
+								case 9: 
+									$('.windSpeed').addClass('wi-wind-beaufort-9');
+									break;
+								case 10: 
+									$('.windSpeed').addClass('wi-wind-beaufort-10');
+									break;
+								case 11: 
+									$('.windSpeed').addClass('wi-wind-beaufort-11');
+									break;
+								case 12: 
+									$('.windSpeed').addClass('wi-wind-beaufort-12');
+									break;
+							};
+	//Wind Direction
+							var windDir = json.wind.deg;
+							$('.windDire').html('<strong>Direction: </strong>' + windDir + ' deg');
+						
+							var iconClass = 'towards-' + windDir + '-deg';
+							$('.wi-wind').addClass(iconClass);
+						
+					/*		if (windDir >= 338 || windDir <= 12) {
+								$('.wi-wind').addClass('towards-0-deg');
+							} else if	(windDir >= 13 && windDir <= 34) {
+								$('.wi-wind').addClass('towards-23-deg');
+							} else if (windDir >= 35 && windDir <= 56) {
+								$('.wi-wind').addClass('towards-45-deg');
+							} else if (windDir >= 57 && windDir <= 79) {
+								$('.wi-wind').addClass('towards-68-deg');
+							} else if (windDir >= 80 && windDir <= 101) {
+								$('.wi-wind').addClass('towards-90-deg');
+							} else if (windDir >= 102 && windDir <= 123) {
+								$('.wi-wind').addClass('towards-113-deg');
+							} else if (windDir >= 124 && windDir <= 146) {
+								$('.wi-wind').addClass('towards-135-deg');
+							} else if (windDir >= 147 && windDir <= 168) {
+								$('.wi-wind').addClass('towards-158-deg');
+							} else if (windDir >= 169 && windDir <= 191) {
+								$('.wi-wind').addClass('towards-180-deg');
+							} else if (windDir >= 192 && windDir <= 213) {
+								$('.wi-wind').addClass('towards-203-deg');
+							} else if (windDir >= 214 && windDir <= 236) {
+								$('.wi-wind').addClass('towards-225-deg');
+							} else if (windDir >= 237 && windDir <= 258) {
+								$('.wi-wind').addClass('towards-248-deg');
+							} else if (windDir >= 259 && windDir <= 281) {
+								$('.wi-wind').addClass('towards-270-deg');
+							} else if (windDir >= 282 && windDir <= 302) {
+								$('.wi-wind').addClass('towards-293-deg');
+							} else if (windDir >= 303 && windDir <= 324) {
+								$('.wi-wind').addClass('towards-313-deg');
+							} else if (windDir >= 325 && windDir <= 337) {
+								$('wi-wind').addClass('towards-336-deg');
+							} else {
+								$('wi-wind').addClass('wi-cloud-refresh');
+							};
+					*/
+							
+						});
+				}); 
+			};
+		});
+		
+	</script>
+	
