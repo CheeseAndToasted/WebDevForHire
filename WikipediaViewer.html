@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+<head>
+<meta charset= "utf-8">
+<meta name="description" content="Wikipedia Viewer project based off FreeCodeCamp's challenge">
+<meta name="author" content="Rohan Gandhi">
+	
+<title>Wikipedia Viewer</title>
+
+<!-- Bootstrap Mini CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- JQuery Core 3.1 -->
+<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+
+<!-- FontAwesome -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+	
+<!-- Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+
+<!-- Custom CSS -->
+<style>
+	body {
+		text-align: center;
+		background-color: #747372; 
+	}
+	.randomLink {
+		font-family: ;
+		color: white; 
+	}
+	.randomLink:hover {
+		text-decoration: none;
+		font-weight: bold;
+		color: #80b3ff; 
+	}
+	.logo {
+		width: 30%; 
+	}
+	.searchBox {
+		margin-top: 200px; 
+	}
+	.searchBar {
+		width: 25%;
+		margin-left: auto;
+		margin-right: auto;
+		display: inline; 
+		margin-top: 50px; 
+	}
+	.btn {
+		display: inline;
+	}
+	.searchTerm {
+		color: white; 
+		text-align: left;
+		padding-top: 20px;		
+	}
+	.result {
+		text-align: left;
+		border: 3px solid #005ce6; 
+		border-radius: 20px; 
+		background-color: white; 
+		margin-top: 10px; 
+		margin-bottom: 10px; 
+		padding-left: 20px;
+		padding-bottom: 20px;
+		color: black;
+	}
+	.result:hover .resultTitle {
+		color: #005ce6;
+	}
+	.result:hover .resultDesc {
+		text-decoration: none;
+	}
+	
+</style>
+	
+</head>	
+	
+	
+<body>
+	<div class="container">
+		<div class="searchBox col-md-12 row">
+			<a class="randomLink" href="https://en.wikipedia.org/wiki/Special:Random" target="blank">
+				Click for a random article! <br>
+				<img src="img/wikiLogo.svg" alt="Wikipedia Logo" class="logo"/> 
+			</a> <br>
+        		<input type="text" class="form-control searchBar" placeholder="Click to search">
+    			<button class="searchbtn btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+		</div>
+		<div class="resultsBox col-md-12 hidden row">
+		</div>
+		<button class="moreResults btn btn-info hidden">Click for more Results</button>
+	</div>
+</body>
+	
+	
+	
+	
+<!-- JQuery Script -->	
+	<script>
+		$(document).ready(function(){
+// Define Main function			
+			function main() {
+// Reset Page
+				$('.resultsBox').html('');
+				$('.moreResults').addClass('hidden');
+				json = [];
+
+// Get Searchbox value and connect API
+				var searchtext = $('.searchBar').val();
+			if (searchtext) {
+				var apiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchtext + '&limit=50&format=json&callback=?';
+				$.ajax({
+					Type: 'GET',
+					url: apiUrl,
+					dataType: 'json',
+					async: false, 
+					success: function(json, status, jqXHR){
+						$('.resultsBox').html('');
+						$('.resultsBox').append('<p class=\"searchTerm\">You Searched for: ' + json[0] + '</p>');
+						$('.hidden').removeClass('hidden');
+
+// Define count methods and result list methods
+						var targetMax = json[1].length;
+						var count = 5;
+						var target = Math.min(count, targetMax);
+						var i = 0; 
+						
+						function listResults() {
+							for (i = i; i < target; i++) {
+								$('.resultsBox').append('<a href=\"' + json[3][i]  + '\" target=\"blank\"><div class=\"row result\"><h3 class=\"resultTitle\">' + json[1][i] + '</h3> <p class=\"resultDesc\">' + json[2][i] + '</p></div></a>');
+							};
+							count = count + 5;
+							target = Math.min(count, targetMax);
+						};
+						
+// List first results and additional when btn clicked
+						listResults();
+						$('.moreResults').on('click', function(){
+							listResults();
+						});
+					}
+				}); 
+				
+				
+			};
+			};
+			
+			$('.searchbtn').on('click', main);
+			$('.searchBar').keypress(function(key) {
+				if (key.which == 13) {
+				//	$('.searchbtn').click();
+					main();
+				}
+			});
+		});
+		
+	</script>
+	
