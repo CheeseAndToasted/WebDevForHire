@@ -89,7 +89,7 @@
         		<input type="text" class="form-control searchBar" placeholder="Click to search">
     			<button class="searchbtn btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
 		</div>
-		<div class="resultsBox col-md-12 hidden row">
+		<div class="resultsBox col-md-12 row">
 		</div>
 		<button class="moreResults btn btn-info hidden">Click for more Results</button>
 	</div>
@@ -106,7 +106,6 @@
 // Reset Page
 				$('.resultsBox').html('');
 				$('.moreResults').addClass('hidden');
-				json = [];
 
 // Get Searchbox value and connect API
 				var searchtext = $('.searchBar').val();
@@ -120,7 +119,7 @@
 					success: function(json, status, jqXHR){
 						$('.resultsBox').html('');
 						$('.resultsBox').append('<p class=\"searchTerm\">You Searched for: ' + json[0] + '</p>');
-						$('.hidden').removeClass('hidden');
+						$('.moreResults').removeClass('hidden');
 
 // Define count methods and result list methods
 						var targetMax = json[1].length;
@@ -130,7 +129,7 @@
 						
 						function listResults() {
 							for (i = i; i < target; i++) {
-								$('.resultsBox').append('<a href=\"' + json[3][i]  + '\" target=\"blank\"><div class=\"row result\"><h3 class=\"resultTitle\">' + json[1][i] + '</h3> <p class=\"resultDesc\">' + json[2][i] + '</p></div></a>');
+								$('.resultsBox').append('<a href=\"' + json[3][i]  + '\" target=\"blank\"><div class=\"row result\"><h3 class=\"resultTitle\">' + json[1][i] + '</h3> <p class=\"resultDesc\">' + json[2][i] + '</p></div></a>').fadeIn('slow');
 							};
 							count = count + 5;
 							target = Math.min(count, targetMax);
