@@ -117,11 +117,16 @@
 <!-- JQuery Script -->	
 	<script>
 		$(document).ready(function(){
+
+			// Set initial quote value
+			quote = "Live as if you were to die tomorrow. Learn as if you were to live forever";
+			author = "Mahatma Gandhi"; 
+
 			$('.newquote').on('click', function() {
 					$.getJSON("http://api.forismatic.com/api/1.0/?method=getQuote&format=jsonp&lang=en&jsonp=?", function(json){
 			// Replaces Current Quote with one from API
-						var quote = json.quoteText;
-						var author = json.quoteAuthor;
+						quote = json.quoteText;
+						author = json.quoteAuthor;
 						$('#quoteText').fadeOut(function(){
 							$('#quoteText').html(quote).fadeIn();
 						});
@@ -134,15 +139,13 @@
 						var randColor = fontColors[Math.floor(Math.random() * fontColors.length)];
 						$('.quotebox').css('color', randColor);
 						
-			// Tweet Button 
-						$("#tweetButton").on("click", function() {
-        					window.open("https://twitter.com/intent/tweet?hashtags=WebDevForHire&text=\"" + quote.replace(/;/g, " --") + "\" -- " + author);
-      					})
 				}); 
 			});
-		
-			
-			
+			// Tweet Button 
+			$("#tweetButton").on("click", function() {
+				var quoteText = quote.replace(/;/g, " --");
+        		window.open("https://twitter.com/intent/tweet?hashtags=WebDevForHire&text=\"" + quoteText + "\" -- " + author);
+      		});
 		});
 		
 	</script>
